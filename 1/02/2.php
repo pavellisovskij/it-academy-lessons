@@ -8,6 +8,8 @@ $c = 1;
 $min = $a;
 $max = $a;
 
+echo "<p>Числа: <b>a=$a; b=$b; c=$c</b>.</p>";
+
 if ($a <= $min) {
     $min = $a;
 } elseif ($a >= $max) {
