@@ -21,8 +21,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <td>Номер</td>
-                        <td>Число</td>
+                        <th>Номер</th>
+                        <th>Число</th>
                     </tr>
                 </thead>
                 <tbody>
