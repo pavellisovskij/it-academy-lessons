@@ -54,8 +54,11 @@
                     <?= $value . ' ' ?>
                 <?php endforeach; ?>
             ]</p>
-            
+
             <p>Произведение чисел: <b><?= $result ?></b>.</p>
+
+            <hr>
+            <a href="index.php" class="btn btn-primary">К списку задач</a>
         </div>
     </body>
 </html>
