@@ -12,7 +12,50 @@
     </head>
     <body>
         <div class="container">
+            <p><b>Задание 1.</b> Определить произведение элементов массива, расположенных между максимальным и минимальным элементами.</p>
+            <hr>
 
+            <?php
+                $array          = [10, 7, 3, 3, 5, 10];
+                $min            = 2147483647;
+                $max            = -2147483648;
+                $index_of_min   = null;
+                $index_of_max   = null;
+                $result         = 1;
+
+                for ($i = 0; $i < count($array); $i++) {
+                    if ($array[$i] <= $min) {
+                        $min            = $array[$i];
+                        $index_of_min   = $i;
+                    }
+                    if ($array[$i] >= $max) {
+                        $max            = $array[$i];
+                        $index_of_max   = $i;
+                    }
+                }
+
+                if (($index_of_min + 1 == $index_of_max) || ($index_of_max + 1 == $index_of_min)) {
+                    $result = "минимальное и максимальное числа стоят рядом друг с другом";
+                }
+                elseif ($index_of_min < $index_of_max) {
+                    for ($i = $index_of_min + 1; $i < $index_of_max; $i++) {
+                        $result *= $array[$i];
+                    }
+                }
+                elseif ($index_of_min > $index_of_max) {
+                    for ($i = $index_of_max + 1; $i < $index_of_min; $i++) {
+                        $result *= $array[$i];
+                    }
+                }
+            ?>
+
+            <p>Массив: [
+                <?php foreach ($array as $value) : ?>
+                    <?= $value . ' ' ?>
+                <?php endforeach; ?>
+            ]</p>
+            
+            <p>Произведение чисел: <b><?= $result ?></b>.</p>
         </div>
     </body>
 </html>
