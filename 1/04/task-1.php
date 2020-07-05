@@ -16,7 +16,7 @@
             <hr>
 
             <?php
-                $array          = [10, 7, 3, 3, 5, 10];
+                $array          = [3, 10, 5, 6, 2, 5];
                 $min            = 2147483647;
                 $max            = -2147483648;
                 $index_of_min   = null;
@@ -33,7 +33,7 @@
                         $index_of_max   = $i;
                     }
                 }
-
+                
                 if (($index_of_min + 1 == $index_of_max) || ($index_of_max + 1 == $index_of_min)) {
                     $result = "минимальное и максимальное числа стоят рядом друг с другом";
                 }
@@ -46,6 +46,9 @@
                     for ($i = $index_of_max + 1; $i < $index_of_min; $i++) {
                         $result *= $array[$i];
                     }
+                }
+                elseif ($index_of_min == $index_of_max) {
+                    $result = "Все элементы массива равны. Нет максимального и минимального чисел.";
                 }
             ?>
 
