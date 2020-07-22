@@ -12,7 +12,23 @@
     </head>
     <body>
         <div class="container">
+            <br>
+            <p>
+                <a href="https://habr.com/ru/news/t/511570/" class="btn btn-primary">Статья</a>
+            </p>
 
+            <?php foreach ($paragraphs_and_statistics as $array): ?>
+                <div class="card">
+                    <div class="card-body">
+                        <?= $array['paragraph'] ?>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Предложений: <?= $array['statistics']['sentences'] ?></li>
+                        <li class="list-group-item">Слов: <?= $array['statistics']['words'] ?></li>
+                        <li class="list-group-item">Символов: <?= $array['statistics']['symbols'] ?></li>
+                    </ul>
+                </div>
+            <?php endforeach; ?>
         </div>
     </body>
 </html>
