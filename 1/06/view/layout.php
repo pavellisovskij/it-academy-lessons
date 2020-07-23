@@ -29,6 +29,9 @@
                     </ul>
                 </div>
             <?php endforeach; ?>
+
+            <br>
+            <?php pagination($pages, $page, 2); ?>
         </div>
     </body>
 </html>

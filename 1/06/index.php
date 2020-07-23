@@ -6,7 +6,11 @@ error_reporting(E_ALL);
 require 'app/core.php';
 require 'app/text.php';
 
-$paragraphs = explode("\r\n", $text);
+if (mb_stripos($text, "\r\n") != false) $delimiter = "\r\n";
+elseif (mb_stripos($text, "\r") != false) $delimiter = "\r";
+elseif (mb_stripos($text, "\n") != false) $delimiter = "\n";
+
+$paragraphs = explode($delimiter, $text);
 $paragraphs = array_values(array_filter($paragraphs, function ($paragraph) {
    return !empty($paragraph);
 }));
