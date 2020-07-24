@@ -6,9 +6,9 @@ function pagination(int $pages, int $page, int $side_buttons_limit) {
     // Ссылки "назад" и "на первую страницу"
     if ($page >= 2 ) {
         // Значение page= для первой страницы всегда равно единице
-        echo '<a href="../index.php?page=1" class="alert alert-light" role="alert"><<</a>';
+        echo '<a href="index.php?page=1" class="alert alert-light" role="alert"><<</a>';
         // Предыдущая страница page=-1
-        echo '<a href="../index.php?page=' . ($page - 1) . '" class="alert alert-light" role="alert"> < </a>';
+        echo '<a href="index.php?page=' . ($page - 1) . '" class="alert alert-light" role="alert"> < </a>';
     }
 
     // Узнаем с какой ссылки начинать вывод
@@ -26,11 +26,11 @@ function pagination(int $pages, int $page, int $side_buttons_limit) {
 
             // Выделяем ссылку на текущую страницу
             if ($j == $page) {
-                echo '<a href="../index.php?page=' . $page . '" class="alert alert-info" role="alert">' . $j . '</a>';
+                echo '<a href="index.php?page=' . $page . '" class="alert alert-info" role="alert">' . $j . '</a>';
             }
             // Ссылки на остальные страницы
             else {
-                echo '<a href="../index.php?page=' . $j . '" class="alert alert-light" role="alert">' . $j . '</a>';
+                echo '<a href="index.php?page=' . $j . '" class="alert alert-light" role="alert">' . $j . '</a>';
             }
         }
     }
@@ -38,9 +38,9 @@ function pagination(int $pages, int $page, int $side_buttons_limit) {
     // Выводим ссылки "вперед" и "на последнюю страницу"
     if ($j > $page && $page + 1 < $j) {
         // Следующая страница
-        echo '<a href="../index.php?page=' . ($page + 1) . '" class="alert alert-light" role="alert">></a>';
+        echo '<a href="index.php?page=' . ($page + 1) . '" class="alert alert-light" role="alert">></a>';
         // Последняя страница
-        echo '<a href="../index.php?page=' . ($pages - 1) . '" class="alert alert-light" role="alert">>></a>';
+        echo '<a href="index.php?page=' . ($pages - 1) . '" class="alert alert-light" role="alert">>></a>';
     }
 
     echo '</div>';
