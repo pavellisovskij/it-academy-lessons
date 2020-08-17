@@ -12,7 +12,20 @@
     </head>
     <body>
         <div class="container">
+            <br>
+            <p>
+                <a href="https://habr.com/ru/news/t/511570/" class="btn btn-primary">Статья из которой взят текст</a>
+            </p>
 
+            <?php if ($message['type'] == 'success') : ?>
+                <div class="alert alert-success" role="alert">
+                    <?= $message['text'] ?>
+                </div>
+            <?php elseif ($message['type'] == 'error') : ?>
+                <div class="alert alert-danger" role="alert">
+                    <?= $message['text'] ?>
+                </div>
+            <?php endif; ?>
         </div>
     </body>
 </html>
