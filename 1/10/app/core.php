@@ -1,5 +1,13 @@
 <?php
 
+function array_transform(array $array) {
+    $new_array = [];
+    foreach ($array as $item) {
+        $new_array[] = $item['image'];
+    }
+    return $new_array;
+}
+
 function pagination(int $pages, int $page, int $side_buttons_limit) {
     echo '<div class="pagination justify-content-center">';
 

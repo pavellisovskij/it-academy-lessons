@@ -11,26 +11,64 @@
         <title>Решение задач по теме "Работа с базой данных. Простейшие запросы на выборку."</title>
     </head>
     <body>
-        <div class="container">
-            <br>
-            <h4>Сообщения</h4>
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <?php if (!empty($errors)) : ?>
+                        <?php foreach ($errors as $error): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?= $error ?>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
 
-            <?php foreach ($data_for_page as $message_data): ?>
-                <div class="card">
-                    <div class="card-header">
-                        <p>Пользователь <?= $message_data['user'] ?> написал:</p>
-                    </div>
-                    <div class="card-body">
-                        <p><?= $message_data['message_text'] ?></p>
-                    </div>
-                    <div class="card-footer">
-                        <p><?= date('d.m.Y H:i:s', (int) $message_data['message_time']) ?></p>
+                    <h4>Добавить сообщение:</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <form enctype="multipart/form-data" action="index.php" method="post">
+                                <div class="form-group">
+                                    <label for="user">Имя пользователя:</label>
+                                    <input type="text" class="form-control" name="user" id="user" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="message">Сообщение:</label>
+                                    <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                                </div>
+
+                                <input type="file" multiple name="images[]" id="img" accept="image/*">
+                                <br><br>
+
+                                <input type="submit" class="btn btn-primary">
+                            </form>
+                        </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
 
-            <br>
-            <?php pagination($pages, $page, 2); ?>
+                <div class="col-md-6">
+                    <h4>Сообщения:</h4>
+                    <?php foreach ($data_for_page as $message_data): ?>
+                        <div class="card">
+                            <div class="card-header">
+                                Пользователь <?= $message_data['user'] ?> написал:
+                            </div>
+                            <div class="card-body">
+                                <?= $message_data['message_text'] ?>
+                            </div>
+                            <?php foreach ($message_data['images'] as $image): ?>
+                                <img class="card-img-bottom" src="/images/<?= $image ?>" alt="Card image cap">
+                            <?php endforeach; ?>
+                            <div class="card-footer">
+                                <?= date('d.m.Y H:i:s', (int) $message_data['message_time']) ?>
+                            </div>
+                        </div>
+                        <br>
+                    <?php endforeach; ?>
+
+                    <br>
+                    <?php pagination($pages, $page, 2); ?>
+                </div>
+            </div>
         </div>
     </body>
 </html>

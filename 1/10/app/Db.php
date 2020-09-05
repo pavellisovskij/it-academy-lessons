@@ -5,53 +5,81 @@ namespace app;
 class Db
 {
     protected $db;
-    protected $db_name;
+    private $config;
+//    protected $db_name;
 
     public function __construct()
     {
-        $db_config = require 'config/db.php';
-        $this->db_name = $db_config['db_name'];
+        $this->config = require 'config/db.php';
         $this->db = new \mysqli(
-            $db_config['host'],
-            $db_config['user'],
-            $db_config['password'],
-            $db_config['db_name'],
-            $db_config['port']
+            $this->config['host'],
+            $this->config['user'],
+            $this->config['password']
         );
+
+        if ($this->db->connect_errno) {
+            throw new \Exception($this->db->connect_error);
+        }
+
+        if (!$this->is_database()) {
+            $this->create_database();
+            $this->db->select_db($this->config['db_name']);
+            $this->create_tables();
+            $this->fill_tables(10);
+        }
+        else {
+            $this->db->select_db($this->config['db_name']);
+        }
     }
 
-    public function data_for_page($table_name, $page, $limit) {
+    public function data_for_page($page, $limit) {
         try {
             if ($page == 1) $start = 0;
             else $start = ($page - 1) * $limit;
 
             $sql = "
                 SELECT id, user, message_text, message_time 
-                FROM $table_name 
+                FROM messages
                 ORDER BY id DESC
                 LIMIT $start, $limit;
             ";
             $result = $this->db->query($sql);
 
-            if ($result == false) {
+            if ($result === false) {
                 throw new \Exception($this->db->error);
             }
 
             $data = $result->fetch_all(MYSQLI_ASSOC);
+            $result_data = [];
+
+            for ($i = 0; $i < count($data); $i++) {
+                $id = $data[$i]['id'];
+                $sql = "
+                    SELECT image 
+                    FROM images
+                    WHERE message_id = $id 
+                ";
+                $result = $this->db->query($sql);
+                $images = $result->fetch_all(MYSQLI_ASSOC);
+                $images = array_transform($images);
+                $result_data[$i] = $data[$i];
+                $result_data[$i]['images'] = $images;
+            }
+
             $result->free();
 
-            return $data;
+            return $result_data;
         } catch(\Exception $e) {
             echo $e->getMessage();
         }
     }
 
-    public function count($table_name) {
+    public function count() {
         try {
-            $sql = "SELECT COUNT(*) FROM $table_name";
+            $sql = "SELECT COUNT(*) FROM messages";
             $result = $this->db->query($sql);
 
-            if ($result == false) {
+            if ($result === false) {
                 throw new \Exception($this->db->error);
             }
 
@@ -64,24 +92,36 @@ class Db
         }
     }
 
-    public function fill_table($table_name, $number) {
-        try {
-            $sql = "
-                INSERT INTO $table_name
-                (user, message_text, message_time)
-                VALUES ('user0', 'Lorem ipsum 0', " . time() . ")
-            ";
+    private function fill_tables($number) {
+        for ($i = 0; $i < $number; $i++) {
+            $message_id = $this->add_message();
+            $this->add_image($message_id);
+        }
+    }
 
-            for ($i = 1; $i < $number; $i++) {
-                $user = "'" . "user$i" . "'";
-                $message = "'" . "Lorem ipsum $i" . "'";
-                $timestamp = time();
-                $sql .= ", ($user, $message, $timestamp)";
-            }
-            $sql .= ";";
+    public function add_message($user = 'test_user', $message = 'test message') {
+        try {
+            $sql = "INSERT INTO messages (user, message_text) VALUES ('$user', '$message')";
 
             $result = $this->db->query($sql);
-            if ($result == false) {
+
+            if ($result === false) {
+                throw new \Exception($this->db->error);
+            }
+
+            return $this->db->insert_id;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function add_image(int $message_id, string $image = "standart.jpg") {
+        try {
+            $sql = "INSERT INTO images (image, message_id) VALUES ('$image', $message_id)";
+
+            $result = $this->db->query($sql);
+
+            if ($result === false) {
                 throw new \Exception($this->db->error);
             }
 
@@ -91,10 +131,10 @@ class Db
         }
     }
 
-    public function create_table($table_name) {
+    private function create_tables() {
         try {
             $sql = "
-                CREATE TABLE $table_name (
+                CREATE TABLE messages (
                     id int(11) NOT NULL AUTO_INCREMENT,
                     user varchar(25) NOT NULL,
                     message_text text NOT NULL,
@@ -104,11 +144,49 @@ class Db
                 )
                 ENGINE = InnoDB,
                 CHARACTER SET utf8,
-                COLLATE utf8_general_ci;
+                COLLATE utf8_general_ci
             ";
             $result = $this->db->query($sql);
 
-            if ($result == false) {
+            if ($result === false) {
+                throw new \Exception($this->db->error);
+            }
+            else {
+                $sql = "
+                CREATE TABLE images (
+                    id int(11) NOT NULL AUTO_INCREMENT,
+                    image varchar(255) NOT NULL,
+                    message_id int(11) NOT NULL,
+                    PRIMARY KEY (id)
+                )
+                ENGINE = InnoDB,
+                CHARACTER SET utf8,
+                COLLATE utf8_general_ci
+            ";
+                $result = $this->db->query($sql);
+
+                if ($result === false) {
+                    throw new \Exception($this->db->error);
+                }
+            }
+
+            return $result;
+        } catch(\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    private function create_database() {
+        try {
+            $table_name = $this->config['db_name'];
+            $sql = "
+                CREATE DATABASE $table_name
+                CHARACTER SET utf8
+                COLLATE utf8_general_ci
+            ";
+
+            $result = $this->db->query($sql);
+            if ($result === false) {
                 throw new \Exception($this->db->error);
             }
 
@@ -118,81 +196,12 @@ class Db
         }
     }
 
-    public function is_table($table_name) {
+    private function is_database() {
         try {
-            $sql = "SHOW TABLES";
-            $result = $this->db->query($sql);
-
-            $array = $result->fetch_all(MYSQLI_ASSOC);
-            $result->free();
-
-            if (empty($array)) {
-                return false;
-            }
-            else {
-                foreach ($array as $item) {
-                    $tables[] = $item['Tables_in_guestbook'];
-                }
-                return in_array($table_name, $tables);
-            }
-        } catch(\Exception $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public static function create_database() {
-        try {
-            $connection = self::if_no_db_connection();
-            $db = $connection['db'];
-
-            if ($db->connect_errno) {
-                throw new \Exception($db->connect_error);
-            }
-
-            $db_name = $connection['db_name'];
-            $sql = "
-                CREATE DATABASE $db_name
-                CHARACTER SET utf8
-                COLLATE utf8_general_ci
-            ";
-
-            $result = $db->query($sql);
-            if ($result == false) {
-                throw new \Exception($db->error);
-            }
-
-            return $result;
-        } catch(\Exception $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    private static function if_no_db_connection() {
-        $db_config = require 'config/db.php';
-        $db = new \mysqli(
-            $db_config['host'],
-            $db_config['user'],
-            $db_config['password']
-        );
-        return [
-            'db' => $db,
-            'db_name' => $db_config['db_name']
-        ];
-    }
-
-    public static function is_database() {
-        try {
-            $connection = self::if_no_db_connection();
-            $db = $connection['db'];
-
-            if ($db->connect_errno) {
-                throw new \Exception($db->connect_error);
-            }
-
             $sql = "SHOW DATABASES";
-            $result = $db->query($sql);
-            if ($result == false) {
-                throw new \Exception($db->error);
+            $result = $this->db->query($sql);
+            if ($result === false) {
+                throw new \Exception($this->db->error);
             }
             $data = $result->fetch_all(MYSQLI_ASSOC);
             $result->free();
@@ -201,7 +210,7 @@ class Db
                 $databases[] = $database['Database'];
             }
 
-            return in_array($connection['db_name'], $databases);
+            return in_array($this->config['db_name'], $databases);
         } catch(\Exception $e) {
             echo $e->getMessage();
         }
