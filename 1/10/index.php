@@ -15,6 +15,7 @@ $db = new app\Db();
 if (!empty($_POST)) {
     $validation_errors  = [];
     $image_errors       = [];
+    $bad_data           = [];
     $min                = 3;
     $max                = 25;
     $uploaddir          = './images/';
@@ -44,6 +45,11 @@ if (!empty($_POST)) {
                 $db->set_new_image_name($image_id, $filename);
                 move_uploaded_file($_FILES['images']['tmp_name'][$i], $uploaddir . $filename);
             }
+        }
+    }
+    else {
+        foreach ($_POST as $key => $value) {
+            $bad_data[$key] = $value;
         }
     }
 }

@@ -28,12 +28,12 @@
                             <form enctype="multipart/form-data" action="index.php" method="post">
                                 <div class="form-group">
                                     <label for="user">Имя пользователя:</label>
-                                    <input type="text" class="form-control" name="user" id="user" required>
+                                    <input type="text" class="form-control" name="user" id="user" value="<?php if (!empty($bad_data)) echo $bad_data['user'] ?>" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="message">Сообщение:</label>
-                                    <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                                    <textarea class="form-control" id="message" name="message" rows="3" required><?php if (!empty($bad_data)) echo $bad_data['message'] ?></textarea>
                                 </div>
 
                                 <input type="file" multiple name="images[]" id="img" accept="image/*">
