@@ -56,7 +56,7 @@
                                 <?= $message_data['message_text'] ?>
                             </div>
                             <?php foreach ($message_data['images'] as $image): ?>
-                                <img class="card-img-bottom" src="/images/<?= $image ?>" alt="Card image cap">
+                                <img class="card-img-bottom" src="images/<?= $image ?>" alt="Card image cap">
                             <?php endforeach; ?>
                             <div class="card-footer">
                                 <?= date('d.m.Y H:i:s', (int) $message_data['message_time']) ?>

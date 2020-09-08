@@ -115,6 +115,22 @@ class Db
         }
     }
 
+    public function set_new_image_name(int $image_id, string $name) {
+        try {
+            $sql = "UPDATE images SET image = '$name' WHERE id = $image_id";
+
+            $result = $this->db->query($sql);
+
+            if ($result === false) {
+                throw new \Exception($this->db->error);
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
     public function add_image(int $message_id, string $image = "standart.jpg") {
         try {
             $sql = "INSERT INTO images (image, message_id) VALUES ('$image', $message_id)";
@@ -125,7 +141,7 @@ class Db
                 throw new \Exception($this->db->error);
             }
 
-            return $result;
+            return $this->db->insert_id;
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
