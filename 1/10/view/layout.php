@@ -59,7 +59,7 @@
                                 <img class="card-img-bottom" src="images/<?= $image ?>" alt="Card image cap">
                             <?php endforeach; ?>
                             <div class="card-footer">
-                                <?= date('d.m.Y H:i:s', (int) $message_data['message_time']) ?>
+                                <?= $message_data['message_time'] ?>
                             </div>
                         </div>
                         <br>
