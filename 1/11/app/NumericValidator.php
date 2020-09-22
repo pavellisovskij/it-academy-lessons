@@ -2,8 +2,12 @@
 
 namespace app;
 
-class Validator
+class NumericValidator extends MainValidator
 {
+    public const STRING_EMPTY   = 'is_string_empty';
+    public const STRING_LESS    = 'is_string_less';
+    public const STRING_LARGER  = 'is_string_larger';
+
     public static function is_string_empty(string $str) {
         if (mb_strlen(trim($str)) == 0) return true;
         else return false;

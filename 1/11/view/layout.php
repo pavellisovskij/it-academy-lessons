@@ -33,6 +33,11 @@
                             <input type="number" class="form-control" name="number" id="number" required>
                         </div>
 
+                        <div class="form-group">
+                            <label for="">Телефон:</label>
+                            <input type="tel" placeholder="+000 (00) 000-00-00">
+                        </div>
+
                         <input type="submit" class="btn btn-primary">
                     </form>
                 </div>
